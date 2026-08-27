@@ -1,13 +1,232 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workshop Github</title>
+    <meta name="description" content="Um guia visual e pratico para entender os principais conceitos do GitHub.">
+    <title>GitHub, sem misterio | Workshop</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        :root {
+            --ink: #17231f;
+            --muted: #5d6b66;
+            --paper: #f4f7f1;
+            --card: #ffffff;
+            --line: #d7e2da;
+            --green: #2f6b53;
+            --mint: #dff1e5;
+            --yellow: #f4c95d;
+            --coral: #e76f51;
+            --blue: #5286a5;
+            --shadow: 0 18px 45px rgba(23, 35, 31, .09);
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: var(--paper);
+            font-family: 'Space Grotesk', sans-serif;
+            line-height: 1.5;
+        }
+        a { color: inherit; text-decoration: none; }
+        .container { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+        .mono { font-family: 'DM Mono', monospace; }
+
+        header {
+            position: sticky; top: 0; z-index: 10;
+            background: rgba(244, 247, 241, .92);
+            border-bottom: 1px solid rgba(215, 226, 218, .85);
+            backdrop-filter: blur(14px);
+        }
+        .nav { height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+        .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: -.03em; }
+        .brand-mark { width: 35px; height: 35px; display: grid; place-items: center; color: white; background: var(--ink); border-radius: 10px; font-size: 20px; }
+        nav { display: flex; align-items: center; gap: 25px; color: var(--muted); font-size: .9rem; }
+        nav a:hover { color: var(--green); }
+        .nav-cta { color: white; background: var(--green); padding: 10px 16px; border-radius: 7px; font-weight: 600; }
+
+        .hero { position: relative; overflow: hidden; padding: 92px 0 82px; background: linear-gradient(125deg, #f4f7f1 0%, #e8f2e7 52%, #f8f0dc 100%); }
+        .hero::before, .hero::after { content: ''; position: absolute; border: 1px solid rgba(47, 107, 83, .16); transform: rotate(30deg); pointer-events: none; }
+        .hero::before { width: 370px; height: 370px; right: -110px; top: -150px; border-radius: 42%; }
+        .hero::after { width: 190px; height: 190px; left: -70px; bottom: -110px; border-radius: 50%; }
+        .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: 70px; }
+        .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: var(--green); font-size: .76rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
+        .eyebrow::before { content: ''; width: 24px; height: 2px; background: var(--coral); }
+        h1 { max-width: 650px; margin: 18px 0 20px; font-size: clamp(3.1rem, 7vw, 6.1rem); line-height: .96; letter-spacing: -.075em; }
+        h1 em { color: var(--green); font-style: normal; }
+        .hero-copy { max-width: 530px; color: var(--muted); font-size: 1.1rem; }
+        .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+        .button { display: inline-flex; align-items: center; gap: 9px; padding: 13px 19px; border: 1px solid var(--ink); border-radius: 7px; font-weight: 600; transition: transform .2s, box-shadow .2s; }
+        .button:hover { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(23, 35, 31, .12); }
+        .button.primary { color: white; border-color: var(--ink); background: var(--ink); }
+        .button.secondary { background: rgba(255,255,255,.35); }
+        .hero-note { margin-top: 27px; color: var(--muted); font-size: .8rem; }
+        .hero-art { position: relative; min-height: 370px; }
+        .terminal { position: absolute; inset: 24px 0 0 25px; padding: 25px; color: #dceee1; background: #1c2924; border-radius: 12px; box-shadow: var(--shadow); transform: rotate(2deg); }
+        .terminal-top { display: flex; gap: 6px; margin-bottom: 32px; }
+        .terminal-top i { width: 9px; height: 9px; border-radius: 50%; background: var(--coral); }
+        .terminal-top i:nth-child(2) { background: var(--yellow); }
+        .terminal-top i:nth-child(3) { background: #7caf68; }
+        .terminal-line { margin: 15px 0; font-family: 'DM Mono', monospace; font-size: .84rem; }
+        .terminal-line span { color: #7fc99a; }
+        .terminal-line b { color: var(--yellow); font-weight: 400; }
+        .sticker { position: absolute; right: -16px; bottom: 10px; width: 132px; height: 132px; display: grid; place-items: center; padding: 18px; color: var(--ink); background: var(--yellow); border-radius: 50%; font-size: .9rem; font-weight: 700; line-height: 1.1; text-align: center; transform: rotate(10deg); box-shadow: 5px 8px 0 rgba(23,35,31,.12); }
+
+        section { padding: 92px 0; }
+        .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 25px; margin-bottom: 35px; }
+        .section-heading h2 { max-width: 590px; margin: 10px 0 0; font-size: clamp(2rem, 4vw, 3.3rem); line-height: 1.02; letter-spacing: -.06em; }
+        .section-heading p { max-width: 330px; margin: 0; color: var(--muted); }
+        .concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .concept { min-height: 230px; padding: 25px; background: var(--card); border: 1px solid var(--line); border-radius: 9px; box-shadow: 0 5px 0 rgba(47,107,83,.04); }
+        .concept:nth-child(2) { background: #edf5ed; }
+        .concept:nth-child(3) { background: #fff6dc; }
+        .concept:nth-child(4) { background: #fcece6; }
+        .concept-icon { width: 38px; height: 38px; display: grid; place-items: center; margin-bottom: 25px; color: white; background: var(--green); border-radius: 50%; font-weight: 700; }
+        .concept:nth-child(3) .concept-icon { background: var(--coral); }
+        .concept:nth-child(4) .concept-icon { background: var(--blue); }
+        .concept h3 { margin: 0 0 8px; font-size: 1.25rem; }
+        .concept p { margin: 0; color: var(--muted); font-size: .93rem; }
+
+        .flow-section { color: #e9f2e9; background: var(--ink); }
+        .flow-section .eyebrow { color: #9bd0aa; }
+        .flow-section .section-heading p { color: #a8b8ae; }
+        .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 42px; }
+        .flow-step { position: relative; padding: 0 24px 0 0; }
+        .flow-step:not(:last-child)::after { content: '->'; position: absolute; top: 9px; right: 16px; color: var(--yellow); font-family: 'DM Mono', monospace; }
+        .flow-number { color: var(--yellow); font-family: 'DM Mono', monospace; font-size: .78rem; }
+        .flow-step h3 { margin: 14px 0 8px; font-size: 1.13rem; }
+        .flow-step p { margin: 0; color: #a8b8ae; font-size: .88rem; }
+        .code-block { margin-top: 52px; padding: 20px 24px; overflow-x: auto; border: 1px solid #3b5146; border-radius: 8px; background: #202f29; color: #d6e8da; font: .82rem/2 'DM Mono', monospace; }
+        .code-block .command { color: #9bd0aa; }
+        .code-block .comment { color: #71887b; }
+
+        .principles { background: #fff; }
+        .principles-layout { display: grid; grid-template-columns: .85fr 1.15fr; gap: 75px; align-items: start; }
+        .principles-layout h2 { margin: 12px 0 18px; font-size: clamp(2.2rem, 4vw, 3.5rem); line-height: 1; letter-spacing: -.07em; }
+        .principles-layout > div > p { color: var(--muted); }
+        .details { border-top: 1px solid var(--line); }
+        details { border-bottom: 1px solid var(--line); }
+        summary { display: flex; justify-content: space-between; gap: 18px; padding: 20px 0; cursor: pointer; list-style: none; font-weight: 600; }
+        summary::-webkit-details-marker { display: none; }
+        summary::after { content: '+'; color: var(--green); font-size: 1.3rem; }
+        details[open] summary::after { content: '-'; }
+        details p { max-width: 600px; margin: -7px 0 20px; color: var(--muted); font-size: .92rem; }
+        footer { padding: 25px 0; color: #a8b8ae; background: var(--ink); font-size: .8rem; }
+        footer .container { display: flex; justify-content: space-between; gap: 20px; }
+
+        @media (max-width: 800px) {
+            .container { width: min(100% - 30px, 600px); }
+            nav a:not(.nav-cta) { display: none; }
+            .hero { padding: 65px 0 55px; }
+            .hero-grid, .principles-layout { grid-template-columns: 1fr; gap: 45px; }
+            h1 { font-size: clamp(3rem, 15vw, 5rem); }
+            .hero-art { min-height: 300px; }
+            .terminal { inset: 10px 5px 0 0; }
+            .sticker { right: -8px; bottom: -8px; }
+            section { padding: 65px 0; }
+            .section-heading { display: block; }
+            .section-heading p { margin-top: 18px; }
+            .concept-grid { grid-template-columns: 1fr 1fr; }
+            .flow { grid-template-columns: 1fr 1fr; gap: 32px 20px; }
+            .flow-step:not(:last-child)::after { display: none; }
+        }
+        @media (max-width: 500px) {
+            .nav { height: 64px; }
+            .brand { font-size: .9rem; }
+            .nav-cta { padding: 8px 11px; font-size: .8rem; }
+            .concept-grid, .flow { grid-template-columns: 1fr; }
+            .concept { min-height: auto; }
+            .flow-step { padding-right: 0; }
+            .code-block { margin-top: 38px; font-size: .74rem; }
+            footer .container { display: block; }
+            footer p { margin: 5px 0; }
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <div class="container nav">
+            <a class="brand" href="#inicio"><span class="brand-mark">⌘</span><span>github / essencial</span></a>
+            <nav aria-label="Navegacao principal">
+                <a href="#conceitos">Conceitos</a>
+                <a href="#fluxo">Fluxo</a>
+                <a href="#boas-praticas">Boas praticas</a>
+                <a class="nav-cta" href="https://github.com" target="_blank" rel="noreferrer">Abrir GitHub <span aria-hidden="true">↗</span></a>
+            </nav>
+        </div>
+    </header>
 
-    <h2>Workshop - Github COTI Informática</h2>
+    <main id="inicio">
+        <section class="hero">
+            <div class="container hero-grid">
+                <div>
+                    <div class="eyebrow">Workshop de GitHub</div>
+                    <h1>Codigo bom<br>merece um <em>lugar</em><br>para evoluir.</h1>
+                    <p class="hero-copy">GitHub e mais do que guardar arquivos. E o espaco onde pessoas constroem software juntas, acompanham mudancas e transformam ideias em entregas.</p>
+                    <div class="hero-actions">
+                        <a class="button primary" href="#conceitos">Explorar conceitos <span aria-hidden="true">↓</span></a>
+                        <a class="button secondary" href="#fluxo">Ver o fluxo <span aria-hidden="true">→</span></a>
+                    </div>
+                    <p class="hero-note mono">git init · git branch · git push</p>
+                </div>
+                <div class="hero-art" aria-label="Ilustracao de um terminal com comandos Git">
+                    <div class="terminal">
+                        <div class="terminal-top"><i></i><i></i><i></i></div>
+                        <p class="terminal-line"><span>~/projeto-github</span> $ git status</p>
+                        <p class="terminal-line">On branch <b>main</b><br>nothing to commit, working tree clean</p>
+                        <p class="terminal-line"><span>~/projeto-github</span> $ git log --oneline</p>
+                        <p class="terminal-line">a81f20d <b>feat:</b> nova ideia</p>
+                    </div>
+                    <div class="sticker">colaborar<br>evolui o<br>codigo</div>
+                </div>
+            </div>
+        </section>
 
+        <section id="conceitos">
+            <div class="container">
+                <div class="section-heading">
+                    <div><div class="eyebrow">O mapa mental</div><h2>As pecas que fazem a colaboracao acontecer.</h2></div>
+                    <p>Entenda a linguagem essencial para navegar por qualquer projeto no GitHub.</p>
+                </div>
+                <div class="concept-grid">
+                    <article class="concept"><div class="concept-icon">R</div><h3>Repository</h3><p>A pasta inteligente do projeto. Guarda codigo, historico, documentacao e as regras para todo mundo trabalhar junto.</p></article>
+                    <article class="concept"><div class="concept-icon">B</div><h3>Branch</h3><p>Uma linha de trabalho independente. Permite experimentar uma funcionalidade sem mexer no codigo principal.</p></article>
+                    <article class="concept"><div class="concept-icon">C</div><h3>Commit</h3><p>Um ponto salvo no historico. Cada commit registra uma mudanca pequena, com contexto e intencao claros.</p></article>
+                    <article class="concept"><div class="concept-icon">PR</div><h3>Pull Request</h3><p>A conversa antes da entrega. O time revisa, comenta, melhora e aprova as mudancas antes do merge.</p></article>
+                    <article class="concept"><div class="concept-icon">I</div><h3>Issue</h3><p>Um lugar para organizar problemas, ideias e tarefas. Da visibilidade ao que precisa ser feito e por que.</p></article>
+                    <article class="concept"><div class="concept-icon">A</div><h3>Actions</h3><p>Automacao que trabalha por voce: testa o codigo, cria builds e publica entregas a cada evento do projeto.</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="flow-section" id="fluxo">
+            <div class="container">
+                <div class="section-heading"><div><div class="eyebrow">Do local para o mundo</div><h2>Um fluxo simples. Uma historia rastreavel.</h2></div><p>O ciclo se repete: voce cria, registra, compartilha e recebe colaboracao.</p></div>
+                <div class="flow">
+                    <article class="flow-step"><span class="flow-number">01 / CRIAR</span><h3>Branch</h3><p>Abra um espaco seguro para sua mudanca.</p></article>
+                    <article class="flow-step"><span class="flow-number">02 / REGISTRAR</span><h3>Commit</h3><p>Salve uma etapa com uma mensagem que explica o por que.</p></article>
+                    <article class="flow-step"><span class="flow-number">03 / COMPARTILHAR</span><h3>Push + PR</h3><p>Envie ao GitHub e convide o time para revisar.</p></article>
+                    <article class="flow-step"><span class="flow-number">04 / INTEGRAR</span><h3>Merge</h3><p>Una o trabalho aprovado ao projeto principal.</p></article>
+                </div>
+                <div class="code-block"><span class="comment"># o caminho mais comum</span><br><span class="command">git checkout -b</span> minha-feature<br><span class="command">git add</span> . && <span class="command">git commit -m</span> "Adiciona minha feature"<br><span class="command">git push origin</span> minha-feature</div>
+            </div>
+        </section>
+
+        <section class="principles" id="boas-praticas">
+            <div class="container principles-layout">
+                <div><div class="eyebrow">Antes de publicar</div><h2>Pequenas escolhas, grandes diferencas.</h2><p>Um projeto acolhedor e previsivel facilita a vida de quem chega depois. Estes fundamentos ajudam o time a manter o ritmo.</p></div>
+                <div class="details">
+                    <details open><summary>Escreva commits que contam uma historia</summary><p>Prefira mensagens no imperativo e descreva uma mudanca por vez. O historico vira uma ferramenta de entendimento, nao um deposito de frases vagas.</p></details>
+                    <details><summary>Use o README como porta de entrada</summary><p>Explique o que o projeto faz, como rodar localmente e como contribuir. Uma boa documentacao reduz perguntas repetidas e acelera novas pessoas.</p></details>
+                    <details><summary>Revise com contexto e respeito</summary><p>Comentarios em Pull Requests devem melhorar o codigo e tornar a decisao mais clara. Discuta a implementacao, nao a pessoa.</p></details>
+                    <details><summary>Automatize o que se repete</summary><p>Com GitHub Actions, tarefas como testes, lint e deploy deixam de depender de memoria e passam a fazer parte do fluxo.</p></details>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer><div class="container"><p>Workshop GitHub · COTI Informatica</p><p class="mono">feito para aprender, compartilhar e construir</p></div></footer>
 </body>
 </html>
